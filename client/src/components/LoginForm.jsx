@@ -1,16 +1,41 @@
 import React from "react";
 
 export const LoginForm = ({activeTab}) => {
+  // Handle form submission with validation
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    if (!form.checkValidity()) {
+      form.classList.add("was-validated");
+      return;
+    }
+    // Placeholder for submit logic
+    const formData = {
+      username: form.elements.exampleInputEmail1.value,
+      password: form.elements.exampleInputPassword1.value,
+      remember: form.elements.exampleCheck1.checked,
+    };
+    console.log("Submitting:", formData);
+  };
   return (
-    <form className="container">
+    <form
+      className="container needs-validation"
+      noValidate
+      onSubmit={handleSubmit}
+    >
       <div className="mb-3 mt-5 row">
         <div className="col-5 offset-4">
-          <label for="exampleInputEmail1" className="form-label">
+          <label htmlFor="exampleInputEmail1" className="form-label">
             Username
           </label>
-          <input type="email" className="form-control" id="exampleInputEmail1" />
+          <input
+            type="email"
+            className="form-control"
+            id="exampleInputEmail1"
+            required
+          />
           <div className="mb-3">
-            <label for="exampleInputPassword1" className="form-label">
+            <label htmlFor="exampleInputPassword1" className="form-label">
               Password
             </label>
             <input
@@ -18,6 +43,7 @@ export const LoginForm = ({activeTab}) => {
               className="form-control"
               id="exampleInputPassword1"
               aria-describedby="passwordHelp"
+              required
             />
             <div id="passwordHelp" className="form-text">
               Incorrect password syntax.
@@ -29,7 +55,7 @@ export const LoginForm = ({activeTab}) => {
               className="form-check-input"
               id="exampleCheck1"
             />
-            <label className="form-check-label" for="exampleCheck1">
+            <label className="form-check-label" htmlFor="exampleCheck1">
               Remember me
             </label>
           </div>

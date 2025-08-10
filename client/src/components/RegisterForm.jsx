@@ -1,11 +1,29 @@
 import React from "react";
 
 export const RegisterForm = () => {
+  // Handle form submit
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    if (!form.checkValidity()) {
+      form.classList.add("was-validated");
+      return;
+    }
+    // Form is valid; log form data or trigger submit logic
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    console.log("Form submitted:", data);
+    // Placeholder for actual submit logic
+  };
   return (
     <div className="container">
       <div className="mb-3 mt-5 row">
         <div className="col-8 offset-2">
-          <form className="row g-3 needs-validation" noValidate>
+          <form
+            className="row g-3 needs-validation"
+            noValidate
+            onSubmit={handleSubmit}
+          >
             <div className="col-md-6">
               <label htmlFor="validationCustom01" className="form-label">
                 First name
