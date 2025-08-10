@@ -3,10 +3,12 @@ const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 const { configDotenv } = require("dotenv");
 const { User, RefreshToken } = require("./models");
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors({
   origin: "http://localhost:5173",
   credentials: true
@@ -74,9 +76,10 @@ app.post("/login", async (req, res) => {
         token: hashedRefreshToken,
         userId: user._id,
       });
+      res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, sameSite: "Strict", path: "/" });
       res
         .status(200)
-        .json({ accessToken: accessToken, refreshToken: refreshToken });
+        .json({ accessToken: accessToken });
     } else {
       res.status(400).send("Invalid Credentials");
     }
@@ -88,7 +91,7 @@ app.post("/login", async (req, res) => {
 //logout user
 app.delete("/logout", async (req, res) => {
   try {
-    const { token } = req.body;
+    const token = req.cookies.refreshToken;
     if (!token) return res.sendStatus(400);
 
     const decoded = jwt.decode(token);
@@ -108,6 +111,7 @@ app.delete("/logout", async (req, res) => {
     if (!matchingTokenDoc) return res.sendStatus(403);
 
     await RefreshToken.deleteOne({ _id: matchingTokenDoc._id });
+    res.clearCookie("refreshToken", { path: "/" });
     res.sendStatus(204);
   } catch (err) {
     console.error(err);
@@ -118,7 +122,7 @@ app.delete("/logout", async (req, res) => {
 //post refreshToken to create new accessToken
 app.post("/token", async (req, res) => {
   try {
-    const { token: refreshToken } = req.body;
+    const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) return res.sendStatus(401);
 
     let decoded;

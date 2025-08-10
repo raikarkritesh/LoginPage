@@ -24,12 +24,9 @@ export const LoginForm = ({activeTab}) => {
       });
       const data = await response.json();
       if (response.ok) {
-        // Store tokens in localStorage
+        // Store access token in localStorage
         if (data.accessToken) {
           localStorage.setItem("accessToken", data.accessToken);
-        }
-        if (data.refreshToken) {
-          localStorage.setItem("refreshToken", data.refreshToken);
         }
         console.log("Login successful:", data);
         alert("Login successful!");
