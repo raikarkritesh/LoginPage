@@ -1,11 +1,16 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { configDotenv } = require("dotenv");
 const { User, RefreshToken } = require("./models");
 const app = express();
 app.use(express.json());
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
 
 const mongoose = require("mongoose");
 mongoose

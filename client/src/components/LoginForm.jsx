@@ -2,20 +2,45 @@ import React from "react";
 
 export const LoginForm = ({activeTab}) => {
   // Handle form submission with validation
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
     if (!form.checkValidity()) {
       form.classList.add("was-validated");
       return;
     }
-    // Placeholder for submit logic
-    const formData = {
-      username: form.elements.exampleInputEmail1.value,
+    const payload = {
+      name: form.elements.exampleInputEmail1.value,
       password: form.elements.exampleInputPassword1.value,
       remember: form.elements.exampleCheck1.checked,
     };
-    console.log("Submitting:", formData);
+    try {
+      const response = await fetch("http://localhost:3000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        // Store tokens in localStorage
+        if (data.accessToken) {
+          localStorage.setItem("accessToken", data.accessToken);
+        }
+        if (data.refreshToken) {
+          localStorage.setItem("refreshToken", data.refreshToken);
+        }
+        console.log("Login successful:", data);
+        alert("Login successful!");
+      } else {
+        console.error("Login failed:", data);
+        alert(data.message || "Login failed");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("An error occurred during login");
+    }
   };
   return (
     <form
@@ -29,7 +54,7 @@ export const LoginForm = ({activeTab}) => {
             Username
           </label>
           <input
-            type="email"
+            type="text"
             className="form-control"
             id="exampleInputEmail1"
             required
