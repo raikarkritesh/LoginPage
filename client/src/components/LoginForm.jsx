@@ -1,6 +1,6 @@
 import React from "react";
 
-export const LoginForm = () => {
+export const LoginForm = ({activeTab}) => {
   return (
     <form className="container">
       <div className="mb-3 mt-5 row">
